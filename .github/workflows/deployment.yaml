@@ -1,0 +1,68 @@
+name: Deployment Workflow
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGION: us-east-1
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Git
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global user.email github-actions@github.com
+          git config --global user.name github-actions
+      
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        shell: bash
+        run: npm i --force
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Deploy CloudFront Distribution using AWS CloudFormation
+        id: deploy_cf
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: astro-forecast-cloudfront-prod
+          template: ./cf-template.yml
+          no-fail-on-empty-changeset: '1'
+      
+      - name: Build App, Deploy Files to S3, and Invalidate the Distribution's Cache
+        shell: bash
+        run: |
+          CI=false npm run build
+          npx deploy-aws-s3-cloudfront@3.6.0 --non-interactive \
+            --bucket aparrett-ui-prod \
+            --source ./build \
+            --destination "astro-forecast" \
+            --cache-control *:no-cache \
+            --distribution ${{ steps.deploy_cf.outputs.CfDistributionId }} \
+            --invalidation-path "/astro-forecast/*"

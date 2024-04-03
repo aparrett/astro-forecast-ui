@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFront Distribution'
+
+Resources:
+  CfDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponsePagePath: '/index.html'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '10'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - 'HEAD'
+            - 'GET'
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # defined by AWS
+          ForwardedValues:
+            Cookies:
+              Forward: 'none'
+            Headers:
+              - 'Origin'
+            QueryString: false
+          ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c # defined by AWS
+          TargetOriginId: 'astro-forecast-s3-origin-prod'
+          ViewerProtocolPolicy: 'redirect-to-https'
+        DefaultRootObject: 'index.html'
+        Enabled: true
+        HttpVersion: 'http2'
+        IPV6Enabled: false
+        Origins:
+          - DomainName: 'aparrett-ui-prod.s3.amazonaws.com'
+            Id: 'astro-forecast-s3-origin-prod'
+            OriginPath: '/astro-forecast'
+            S3OriginConfig:
+              OriginAccessIdentity: origin-access-identity/cloudfront/E17MRUJWC9L2NP
+        PriceClass: 'PriceClass_100'
+
+Outputs:
+  CfDistributionId:
+    Description: 'CloudFront Distribution Id'
+    Value: !Ref CfDistribution
+
