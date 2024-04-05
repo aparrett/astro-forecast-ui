@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
         shell: bash
-        run: npm i --force
+        run: npm i
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
