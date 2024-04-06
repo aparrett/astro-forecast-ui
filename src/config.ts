@@ -1,7 +1,7 @@
 import.meta.env.VITE_ENV;
 
 const local = {
-  ASTRO_WS_URL: 'http://localhost:3000/local',
+  ASTRO_WS_URL: 'http://localhost:3000/local/',
 };
 
 const production = {
