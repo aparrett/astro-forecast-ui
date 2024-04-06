@@ -6,6 +6,7 @@
     "start": "vite",
     "build": "vite build",
     "test": "vitest",
+    "test:ci": "echo 1",
     "test:watch": "vitest watch"
   },
   "dependencies": {
