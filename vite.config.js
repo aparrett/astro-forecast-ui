@@ -10,5 +10,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
   },
+  server: {
+    open: true
+  },
   base: './'
 });
