@@ -1,1 +1,3 @@
-# Astro Forecast UI
+# AstroWS
+
+Astro Weather Service

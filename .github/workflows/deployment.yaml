@@ -15,12 +15,6 @@ jobs:
       - name: Checkout Git
         uses: actions/checkout@v2
 
-      - name: Configure Git
-        shell: bash
-        run: |
-          git config --global user.email github-actions@github.com
-          git config --global user.name github-actions
-      
       - name: Setup node
         uses: actions/setup-node@v2
         with:
