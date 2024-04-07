@@ -53,5 +53,7 @@ export const transformForecast = (forecast: GetForecastResponse): TransformedFor
   windDirection: removePast(expand(forecast.windDirection)),
   windSpeed: removePast(expand(forecast.windSpeed)),
   windGust: removePast(expand(forecast.windGust)),
-  probabilityOfPrecipitation: removePast(expand(forecast.probabilityOfPrecipitation)),
+  probabilityOfPrecipitation: removePast(expand(forecast.probabilityOfPrecipitation)).filter(
+    (_, i, a) => i < a.length - 5
+  ),
 });

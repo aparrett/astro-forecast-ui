@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import './ForecastTable.css';
 import { useGetForecast } from '../../service/getForecast';
-import { getCloudColor } from '../../utils/borderColors';
+import { getCloudColor, getPrecipitationColor, getTemperatureColor, getWindSpeedColor } from '../../utils/borderColors';
 import dayjs from 'dayjs';
 
 export const ForecastTable: FC = () => {
@@ -27,14 +27,13 @@ export const ForecastTable: FC = () => {
   return (
     <div className="forecast-table">
       <div className="y-headers">
-        <div className="y-header" style={{ height: '24px' }}></div>
-        <div className="y-header" style={{ height: '24px' }}></div>
-        <div className="y-header">c</div>
-        <div className="y-header">w</div>
-        <div className="y-header">g</div>
-        <div className="y-header">t</div>
-        <div className="y-header">d</div>
-        <div className="y-header">p</div>
+        <div className="y-header" style={{ height: '46px' }}></div>
+        <div className="y-header">C</div>
+        <div className="y-header">W</div>
+        <div className="y-header">G</div>
+        <div className="y-header">T</div>
+        <div className="y-header">D</div>
+        <div className="y-header">P</div>
       </div>
       <div className="forecast-data">
         {/* Days of the week row */}
@@ -103,7 +102,7 @@ export const ForecastTable: FC = () => {
         {/* Wind speed */}
         <div className="row">
           {forecast?.windSpeed.map((v, i) => (
-            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+            <div className={`cell border ${getWindSpeedColor(v)}-border`} key={i}>
               {v}
             </div>
           ))}
@@ -112,7 +111,7 @@ export const ForecastTable: FC = () => {
         {/* Wind gust */}
         <div className="row">
           {forecast?.windGust.map((v, i) => (
-            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+            <div className={`cell border ${getWindSpeedColor(v)}-border`} key={i}>
               {v}
             </div>
           ))}
@@ -121,7 +120,7 @@ export const ForecastTable: FC = () => {
         {/* Temperature */}
         <div className="row">
           {forecast?.temperature.map((v, i) => (
-            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+            <div className={`cell border ${getTemperatureColor(v)}-border`} key={i}>
               {v}
             </div>
           ))}
@@ -130,7 +129,7 @@ export const ForecastTable: FC = () => {
         {/* Dewpoint */}
         <div className="row">
           {forecast?.dewpoint.map((v, i) => (
-            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+            <div className={`cell border ${getTemperatureColor(v)}-border`} key={i}>
               {v}
             </div>
           ))}
@@ -139,7 +138,7 @@ export const ForecastTable: FC = () => {
         {/* Precipiation */}
         <div className="row">
           {forecast?.probabilityOfPrecipitation.map((v, i) => (
-            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+            <div className={`cell border ${getPrecipitationColor(v)}-border`} key={i}>
               {v}
             </div>
           ))}

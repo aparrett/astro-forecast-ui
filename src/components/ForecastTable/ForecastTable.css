@@ -25,6 +25,7 @@
 .forecast-table .cell.border {
   border-bottom-width: 5px;
   border-bottom-style: solid;
+  margin-top: 4px;
 }
 
 .forecast-table .y-headers {
@@ -38,6 +39,8 @@
   border-bottom-width: 5px;
   border-bottom-style: solid;
   border-bottom-color: #00000000;
+  padding-top: 3px;
+  margin-bottom: 4px;
 }
 
 .forecast-table .tod {

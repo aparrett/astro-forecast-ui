@@ -52,3 +52,43 @@ body {
 .white-border {
   border-color: #ededed;
 }
+
+.blue-border {
+  border-color: #005abb;
+}
+
+.light-blue-border {
+  border-color: #5396dd;
+}
+
+.light-yellow-border {
+  border-color: rgb(255, 255, 103);
+}
+
+.orange-border {
+  border-color: orange;
+}
+
+.red-border {
+  border-color: rgb(255, 43, 43);
+}
+
+.dark-red-border {
+  border-color: rgb(202, 14, 14);
+}
+
+.light-green-border {
+  border-color: rgb(110, 201, 110);
+}
+
+.green-border {
+  border-color: rgb(38, 172, 38);
+}
+
+.medium-green-border {
+  border-color: green;
+}
+
+.dark-green-border {
+  border-color: rgb(5, 99, 5);
+}
