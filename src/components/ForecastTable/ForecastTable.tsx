@@ -5,7 +5,6 @@ import { getCloudColor } from '../../utils/borderColors';
 
 export const ForecastTable: FC = () => {
   const { data: forecast } = useGetForecast('38.91', '-91.7');
-  console.log(forecast);
 
   return (
     <div className="forecast-table">

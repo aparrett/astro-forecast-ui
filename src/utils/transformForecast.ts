@@ -1,4 +1,5 @@
 import { ForecastGridResponse, ForecastValue, GetForecastResponse } from 'astro-ws-types';
+import dayjs from 'dayjs';
 
 export interface TransformedForecast {
   updateTime: string;
@@ -15,10 +16,21 @@ export interface TransformedForecast {
 }
 
 export const expand = (values: ForecastValue[]) => {
-  const result: number[] = [];
+  const result: ForecastValue[] = [];
   values.forEach((v) => {
     const length = Number(v.validTime.split('/')[1].split('PT')[1].split('H')[0]);
     for (let i = 0; i < length; i++) {
+      result.push(v);
+    }
+  });
+  return result;
+};
+
+/** Removes any data from the past and returns the raw data */
+export const removePast = (values: ForecastValue[]) => {
+  const result: number[] = [];
+  values.forEach((v) => {
+    if (!dayjs(v.validTime.split('/')[0]).isBefore(dayjs().startOf('hour'))) {
       result.push(v.value);
     }
   });
@@ -29,13 +41,13 @@ export const expand = (values: ForecastValue[]) => {
 export const transformForecast = (forecast: GetForecastResponse): TransformedForecast => ({
   updateTime: forecast.updateTime,
   elevation: forecast.elevation,
-  temperature: expand(forecast.temperature),
-  dewpoint: expand(forecast.dewpoint),
-  relativeHumidity: expand(forecast.relativeHumidity),
-  windChill: expand(forecast.windChill),
-  skyCover: expand(forecast.skyCover),
-  windDirection: expand(forecast.windDirection),
-  windSpeed: expand(forecast.windSpeed),
-  windGust: expand(forecast.windGust),
-  probabilityOfPrecipitation: expand(forecast.probabilityOfPrecipitation),
+  temperature: removePast(expand(forecast.temperature)),
+  dewpoint: removePast(expand(forecast.dewpoint)),
+  relativeHumidity: removePast(expand(forecast.relativeHumidity)),
+  windChill: removePast(expand(forecast.windChill)),
+  skyCover: removePast(expand(forecast.skyCover)),
+  windDirection: removePast(expand(forecast.windDirection)),
+  windSpeed: removePast(expand(forecast.windSpeed)),
+  windGust: removePast(expand(forecast.windGust)),
+  probabilityOfPrecipitation: removePast(expand(forecast.probabilityOfPrecipitation)),
 });
