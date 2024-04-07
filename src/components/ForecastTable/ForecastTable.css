@@ -1,17 +1,29 @@
 .forecast-table {
-  overflow-x: auto;
-  color: white;
   font-size: 14px;
   margin-top: 20px;
   min-height: 50px; /* delete this later */
+  display: flex;
 }
 
 .row {
   display: flex;
 }
 
+.forecast-data {
+  overflow-x: auto;
+}
+
 .forecast-table .cell {
   width: 22px;
+  flex-shrink: 0;
+  text-align: center;
+  padding-bottom: 3px;
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+}
+
+.forecast-table .y-headers {
+  width: 22px; /* todo: this will change with icons */
   flex-shrink: 0;
   text-align: center;
 }

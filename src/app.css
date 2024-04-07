@@ -5,6 +5,7 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+  color: #ebebeb;
 }
 
 .app-container {
@@ -12,6 +13,7 @@ body {
   display: flex;
   height: 100vh;
   background-color: #00244a;
+  padding-top: 20px;
 }
 
 .app-gutter {
@@ -29,4 +31,24 @@ body {
   .app-content {
     width: 100%;
   }
+}
+
+.black-border {
+  border-color: #000;
+}
+
+.dark-gray-border {
+  border-color: #303030;
+}
+
+.medium-gray-border {
+  border-color: #636363;
+}
+
+.light-gray-border {
+  border-color: #989898;
+}
+
+.white-border {
+  border-color: #ededed;
 }
