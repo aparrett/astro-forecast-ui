@@ -27,9 +27,14 @@ export const ForecastTable: FC = () => {
   return (
     <div className="forecast-table">
       <div className="y-headers">
-        <div className="y-header"></div>
-        <div className="y-header"></div>
+        <div className="y-header" style={{ height: '24px' }}></div>
+        <div className="y-header" style={{ height: '24px' }}></div>
         <div className="y-header">c</div>
+        <div className="y-header">w</div>
+        <div className="y-header">g</div>
+        <div className="y-header">t</div>
+        <div className="y-header">d</div>
+        <div className="y-header">p</div>
       </div>
       <div className="forecast-data">
         {/* Days of the week row */}
@@ -56,23 +61,84 @@ export const ForecastTable: FC = () => {
           {new Array(totalHours).fill('x').map((_, i) => {
             if (i < hoursLeftInDay) {
               if (hoursLeftInDay - i === 12) {
-                return <div className="cell tod" key={i}>12</div>;
+                return (
+                  <div className="cell tod" key={i}>
+                    12
+                  </div>
+                );
               } else {
-                return <div className="cell tod" key={i}>{(24 - hoursLeftInDay + i) % 12}</div>;
+                return (
+                  <div className="cell tod" key={i}>
+                    {(24 - hoursLeftInDay + i) % 12}
+                  </div>
+                );
               }
             } else {
               if ((i - hoursLeftInDay) % 24 === 12) {
-                return <div className="cell tod" key={i}>12</div>;
+                return (
+                  <div className="cell tod" key={i}>
+                    12
+                  </div>
+                );
               } else {
-                return <div className="cell tod" key={i}>{(i - hoursLeftInDay) % 12}</div>;
+                return (
+                  <div className="cell tod" key={i}>
+                    {(i - hoursLeftInDay) % 12}
+                  </div>
+                );
               }
             }
           })}
         </div>
 
-        {/* Sky cover row */}
+        {/* Sky cover */}
         <div className="row">
           {forecast?.skyCover.map((v, i) => (
+            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+              {v}
+            </div>
+          ))}
+        </div>
+
+        {/* Wind speed */}
+        <div className="row">
+          {forecast?.windSpeed.map((v, i) => (
+            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+              {v}
+            </div>
+          ))}
+        </div>
+
+        {/* Wind gust */}
+        <div className="row">
+          {forecast?.windGust.map((v, i) => (
+            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+              {v}
+            </div>
+          ))}
+        </div>
+
+        {/* Temperature */}
+        <div className="row">
+          {forecast?.temperature.map((v, i) => (
+            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+              {v}
+            </div>
+          ))}
+        </div>
+
+        {/* Dewpoint */}
+        <div className="row">
+          {forecast?.dewpoint.map((v, i) => (
+            <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
+              {v}
+            </div>
+          ))}
+        </div>
+
+        {/* Precipiation */}
+        <div className="row">
+          {forecast?.probabilityOfPrecipitation.map((v, i) => (
             <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
               {v}
             </div>
