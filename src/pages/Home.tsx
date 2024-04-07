@@ -1,14 +1,9 @@
 import { FC } from 'react';
-import { useGetForecast } from '../service/getForecast';
+import { ForecastTable } from '../components/ForecastTable/ForecastTable';
 
 const Home: FC = () => {
-  const { data: forecast } = useGetForecast('38.91', '-91.7');
-  return (
-    <section>
-      <h1>Welcome!</h1>
-      {JSON.stringify(forecast)}
-    </section>
-  );
+  // TODO: Header, footer, etc.
+  return <ForecastTable />;
 };
 
 export default Home;

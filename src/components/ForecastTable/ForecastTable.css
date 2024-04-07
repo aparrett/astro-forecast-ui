@@ -1,0 +1,17 @@
+.forecast-table {
+  overflow-x: auto;
+  color: white;
+  font-size: 14px;
+  margin-top: 20px;
+  min-height: 50px; /* delete this later */
+}
+
+.row {
+  display: flex;
+}
+
+.forecast-table .cell {
+  width: 22px;
+  flex-shrink: 0;
+  text-align: center;
+}
