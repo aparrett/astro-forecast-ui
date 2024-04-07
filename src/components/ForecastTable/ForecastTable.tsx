@@ -56,15 +56,15 @@ export const ForecastTable: FC = () => {
           {new Array(totalHours).fill('x').map((_, i) => {
             if (i < hoursLeftInDay) {
               if (hoursLeftInDay - i === 12) {
-                return <div className="cell tod">12</div>;
+                return <div className="cell tod" key={i}>12</div>;
               } else {
-                return <div className="cell tod">{(24 - hoursLeftInDay + i) % 12}</div>;
+                return <div className="cell tod" key={i}>{(24 - hoursLeftInDay + i) % 12}</div>;
               }
             } else {
               if ((i - hoursLeftInDay) % 24 === 12) {
-                return <div className="cell tod">12</div>;
+                return <div className="cell tod" key={i}>12</div>;
               } else {
-                return <div className="cell tod">{(i - hoursLeftInDay) % 12}</div>;
+                return <div className="cell tod" key={i}>{(i - hoursLeftInDay) % 12}</div>;
               }
             }
           })}

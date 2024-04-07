@@ -19,7 +19,10 @@ export interface TransformedForecast {
 export const expand = (values: ForecastValue[]) => {
   const result: ForecastValue[] = [];
   values.forEach((v) => {
-    const length = Number(v.validTime.split('/')[1].split('PT')[1].split('H')[0]);
+    const duration = v.validTime.split('/')[1]; // P1DT12H or PT14H format
+    const length = duration.includes('D')
+      ? Number(duration[1]) * 24 + Number(duration.split('T')[1].split('H')[0])
+      : Number(duration.split('T')[1].split('H')[0]);
     for (let i = 0; i < length; i++) {
       result.push({ value: v.value, validTime: dayjs(v.validTime.split('/')[0]).add(i, 'hour').toISOString() });
     }

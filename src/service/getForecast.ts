@@ -10,10 +10,16 @@ export const useGetForecast = (
   units?: string
 ): QueryObserverResult<TransformedForecast, unknown> => {
   const getForecast = async () => {
-    const f = await ky
-      .get(`${config.ASTRO_WS_URL}forecast?lat=${lat}&long=${long}&units=${units || ''}`)
-      .json<GetForecastResponse>();
-    return transformForecast(f);
+    try {
+      const f = await ky
+        .get(`${config.ASTRO_WS_URL}forecast?lat=${lat}&long=${long}&units=${units || ''}`)
+        .json<GetForecastResponse>();
+
+      return transformForecast(f);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
   };
   return useQuery({
     queryKey: ['useGetForecast', lat, long, units],
