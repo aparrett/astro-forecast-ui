@@ -15,12 +15,13 @@ export interface TransformedForecast {
   probabilityOfPrecipitation: number[];
 }
 
+/** Duplicates values depending on the duration given by the NWS. Also removes the durations after expanding. */
 export const expand = (values: ForecastValue[]) => {
   const result: ForecastValue[] = [];
   values.forEach((v) => {
     const length = Number(v.validTime.split('/')[1].split('PT')[1].split('H')[0]);
     for (let i = 0; i < length; i++) {
-      result.push(v);
+      result.push({ value: v.value, validTime: dayjs(v.validTime.split('/')[0]).add(i, 'hour').toISOString() });
     }
   });
   return result;
