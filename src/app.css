@@ -16,6 +16,12 @@ body {
   padding-top: 20px;
 }
 
+@media (max-width: 480px) {
+  .app-container {
+    padding-top: 8px;
+  }
+}
+
 .app-gutter {
   width: 15%;
 }
@@ -91,4 +97,15 @@ body {
 
 .dark-green-border {
   border-color: rgb(5, 99, 5);
+}
+
+/* Remove arrows on number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
 }

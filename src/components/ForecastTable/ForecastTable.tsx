@@ -1,11 +1,12 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import './ForecastTable.css';
 import { useGetForecast } from '../../service/getForecast';
 import { getCloudColor, getPrecipitationColor, getTemperatureColor, getWindSpeedColor } from '../../utils/borderColors';
 import dayjs from 'dayjs';
+import { CoordinatesState } from '../../types';
 
-export const ForecastTable: FC = () => {
-  const { data: forecast, isLoading } = useGetForecast('38.91', '-91.7');
+export const ForecastTable: FC<{ coordinates?: CoordinatesState }> = ({ coordinates }) => {
+  const { data: forecast, isLoading } = useGetForecast(coordinates?.curr.latitude, coordinates?.curr.longitude);
 
   if (isLoading) {
     // TODO

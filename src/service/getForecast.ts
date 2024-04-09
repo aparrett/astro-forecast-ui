@@ -5,8 +5,8 @@ import { GetForecastResponse } from 'astro-ws-types';
 import { TransformedForecast, transformForecast } from '../utils/transformForecast';
 
 export const useGetForecast = (
-  lat: string,
-  long: string,
+  lat?: number,
+  long?: number,
   units?: string
 ): QueryObserverResult<TransformedForecast, unknown> => {
   const getForecast = async () => {
@@ -18,7 +18,7 @@ export const useGetForecast = (
       return transformForecast(f);
     } catch (e) {
       console.log(e);
-      return;
+      throw e;
     }
   };
   return useQuery({
