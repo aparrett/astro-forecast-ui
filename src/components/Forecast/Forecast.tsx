@@ -6,11 +6,12 @@ import './Forecast.css';
 interface ForecastProps {
   location: AstroLocation;
   setLocations: React.Dispatch<React.SetStateAction<string>>;
+  setLocation: (location: AstroLocation) => void;
   /** stringified JSON */
   locations: string;
 }
 
-export const Forecast = ({ location, locations, setLocations }: ForecastProps) => {
+export const Forecast = ({ location, locations, setLocations, setLocation }: ForecastProps) => {
   const key = getLocationKey(location);
   const parsedLocations = JSON.parse(locations);
   return (
@@ -19,7 +20,9 @@ export const Forecast = ({ location, locations, setLocations }: ForecastProps) =
         {location.name || `Latitude ${location.coordinates.latitude}, Longitude ${location.coordinates.longitude}`}
       </div>
       {/* Remove save button when location is alredy saved. */}
-      {!parsedLocations[key] && <SaveLocation location={location} setLocations={setLocations} locations={locations} />}
+      {!parsedLocations[key] && (
+        <SaveLocation location={location} setLocations={setLocations} locations={locations} setLocation={setLocation} />
+      )}
     </div>
   );
 };

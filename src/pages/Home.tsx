@@ -20,7 +20,7 @@ const Home: FC = () => {
     <div>
       <Navbar setLocation={setLocation} />
       {location ? (
-        <Forecast location={location} setLocations={setLocations} locations={locations} />
+        <Forecast location={location} setLocations={setLocations} locations={locations} setLocation={setLocation} />
       ) : (
         <div>No locations found. Search for a location to get started.</div>
       )}

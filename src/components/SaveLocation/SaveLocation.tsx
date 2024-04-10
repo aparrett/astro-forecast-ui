@@ -9,9 +9,15 @@ interface SaveLocationProps {
   setLocations: React.Dispatch<React.SetStateAction<string>>;
   /** stringified JSON */
   locations: string;
+  setLocation: (l: AstroLocation) => void;
 }
 
-export const SaveLocation = ({ location: { coordinates }, setLocations, locations }: SaveLocationProps) => {
+export const SaveLocation = ({
+  location: { coordinates },
+  setLocations,
+  locations,
+  setLocation,
+}: SaveLocationProps) => {
   const [showLocationDrawer, setShowLocationDrawer] = useState(false);
   const [name, setName] = useState('');
   const resetAndClose = () => {
@@ -31,6 +37,7 @@ export const SaveLocation = ({ location: { coordinates }, setLocations, location
       return;
     } else {
       setLocations(JSON.stringify({ ...updatedLocations, [key]: { name, coordinates } }));
+      setLocation({ name, coordinates });
       // TODO: toast
       alert(`Saved location ${name} at ${key}.`);
       resetAndClose();
