@@ -12,7 +12,7 @@ export const useGetForecast = (
   const getForecast = async () => {
     try {
       const f = await ky
-        .get(`${config.ASTRO_WS_URL}forecast?lat=${lat}&long=${long}&units=${units || ''}`)
+        .get(`${config.ASTRO_WS_URL}forecast?lat=${lat}&long=${long}&units=${units || ''}`, { retry: 0 })
         .json<GetForecastResponse>();
 
       return transformForecast(f);

@@ -15,7 +15,8 @@
 }
 
 .forecast-table .cell {
-  width: 22px;
+  /* increased width to support 3 digits */
+  width: 26px;
   flex-shrink: 0;
   text-align: center;
   padding-bottom: 3px;
@@ -49,7 +50,7 @@
 }
 
 .forecast-table .dow {
-  width: 528px; /* 22px * 24 hours */
+  width: 624px; /* 26px * 24 hours */
   text-align: center;
   border-right: 1px solid #ebebeb;
   flex-shrink: 0;

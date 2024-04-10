@@ -1,0 +1,85 @@
+.drawer-overlay {
+  position: absolute;
+  height: 100%;
+  top: 0px;
+  overflow: auto;
+  z-index: 100;
+  right: 0px;
+  width: 100%;
+}
+
+.drawer {
+  position: absolute;
+  height: 100%;
+  top: 0px;
+  overflow: auto;
+  z-index: 100;
+  right: 0px;
+  width: 33.33%;
+  background-color: #00244a;
+  padding: 16px;
+}
+
+@media (max-width: 575px) {
+  .drawer {
+    width: 90%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .drawer {
+    width: 60%;
+  }
+}
+
+.drawer-title {
+  margin-bottom: 20px;
+}
+
+.drawer-contents {
+  font-size: 14px;
+}
+
+.drawer-contents .field {
+  padding-top: 6px;
+}
+
+.drawer-contents .field label {
+  padding-right: 8px;
+}
+
+.drawer-actions {
+  margin-top: 14px;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  right: 8px;
+  top: 10px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.3;
+}
+
+.close-btn:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+.close-btn:before,
+.close-btn:after {
+  position: absolute;
+  left: 10px;
+  content: ' ';
+  height: 24px;
+  width: 2px;
+  background-color: #fff;
+}
+
+.close-btn:before {
+  transform: rotate(45deg);
+}
+
+.close-btn:after {
+  transform: rotate(-45deg);
+}

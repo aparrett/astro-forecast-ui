@@ -14,6 +14,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: (failureCount) => failureCount === 1,
     },
   },
 });
