@@ -1,0 +1,17 @@
+.locations .header {
+  font-size: 22px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.location {
+  margin-bottom: 16px;
+}
+
+.location-name {
+  font-weight: bold;
+}
+
+.location button {
+  margin-top: 6px;
+}

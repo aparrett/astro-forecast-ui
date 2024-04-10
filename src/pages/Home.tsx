@@ -5,6 +5,7 @@ import { Coordinates } from 'astro-ws-types';
 import { CoordinatesState } from '../types';
 import { useLocalStorage } from 'usehooks-ts';
 import { SaveLocation } from '../components/SaveLocation/SaveLocation';
+import { Locations } from '../components/Locations/Locations';
 
 const Home: FC = () => {
   const [coordinates, updateCoordinates] = useState<CoordinatesState>({ curr: { latitude: 38.92, longitude: -91.7 } });
@@ -17,6 +18,7 @@ const Home: FC = () => {
       <Navbar setCoordinates={setCoordinates} />
       <SaveLocation coordinates={coordinates} setLocations={setLocations} locations={locations} />
       <ForecastTable coordinates={coordinates} />
+      <Locations locations={locations} setCoordinates={setCoordinates} />
     </div>
   );
 };
