@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { CoordinatesState } from '../../types';
 import { Drawer } from '../Drawer/Drawer';
+import { CurrentLocation } from '../../types/Locations';
+import './SaveLocation.css';
 
 interface SaveLocationProps {
-  coordinates?: CoordinatesState;
+  location: CurrentLocation;
   setLocations: React.Dispatch<React.SetStateAction<string>>;
   /** stringified JSON */
   locations: string;
 }
 
-export const SaveLocation = ({ coordinates, setLocations, locations }: SaveLocationProps) => {
+export const SaveLocation = ({ location: { coordinates }, setLocations, locations }: SaveLocationProps) => {
   const [showLocationDrawer, setShowLocationDrawer] = useState(false);
   const [name, setName] = useState('');
   const resetAndClose = () => {
@@ -17,7 +18,7 @@ export const SaveLocation = ({ coordinates, setLocations, locations }: SaveLocat
     setShowLocationDrawer(false);
   };
   const handleSaveLocation = () => {
-    const key = coordinates?.curr.latitude + ',' + coordinates?.curr.longitude;
+    const key = coordinates.latitude + ',' + coordinates.longitude;
     const updatedLocations = JSON.parse(locations);
     if (updatedLocations[key]) {
       // TODO: toast
@@ -25,7 +26,7 @@ export const SaveLocation = ({ coordinates, setLocations, locations }: SaveLocat
       resetAndClose();
       return;
     } else {
-      setLocations(JSON.stringify({ ...updatedLocations, [key]: { name, coordinates: coordinates?.curr } }));
+      setLocations(JSON.stringify({ ...updatedLocations, [key]: { name, coordinates } }));
       // TODO: toast
       alert(`Saved location ${name} at ${key}.`);
       resetAndClose();
@@ -37,7 +38,7 @@ export const SaveLocation = ({ coordinates, setLocations, locations }: SaveLocat
 
   return (
     <div>
-      <div className="location-details">
+      <div className="save-location">
         <button type="button" onClick={() => setShowLocationDrawer(true)}>
           Save Location
         </button>
@@ -48,7 +49,7 @@ export const SaveLocation = ({ coordinates, setLocations, locations }: SaveLocat
             <div className="drawer-title">Save Location</div>
             <div className="drawer-contents">
               <div>
-                Coordinates: {coordinates?.curr.latitude}, {coordinates?.curr.longitude}
+                Coordinates: {coordinates.latitude}, {coordinates.longitude}
               </div>
               <div className="field">
                 <label>Name</label>

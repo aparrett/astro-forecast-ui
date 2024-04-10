@@ -1,24 +1,31 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ForecastTable } from '../components/ForecastTable/ForecastTable';
 import { Navbar } from '../components/Navbar/Navbar';
-import { Coordinates } from 'astro-ws-types';
-import { CoordinatesState } from '../types';
 import { useLocalStorage } from 'usehooks-ts';
-import { SaveLocation } from '../components/SaveLocation/SaveLocation';
 import { Locations } from '../components/Locations/Locations';
+import { Forecast } from '../components/Forecast/Forecast';
+import { CurrentLocation } from '../types/Locations';
 
 const Home: FC = () => {
-  const [coordinates, updateCoordinates] = useState<CoordinatesState>({ curr: { latitude: 38.92, longitude: -91.7 } });
   const [locations, setLocations] = useLocalStorage('locations', '{}');
-  const setCoordinates = (newCoordinates: Coordinates) => {
-    updateCoordinates({ prev: coordinates?.curr, curr: newCoordinates });
-  };
+  const [location, setLocation] = useState<CurrentLocation>();
+
+  useEffect(() => {
+    const parsedLocations = JSON.parse(locations);
+    if (Object.keys(parsedLocations).length) {
+      setLocation(parsedLocations[Object.keys(parsedLocations)[0]]);
+    }
+  }, []);
   return (
     <div>
-      <Navbar setCoordinates={setCoordinates} />
-      <SaveLocation coordinates={coordinates} setLocations={setLocations} locations={locations} />
-      <ForecastTable coordinates={coordinates} />
-      <Locations locations={locations} setCoordinates={setCoordinates} />
+      <Navbar setLocation={setLocation} />
+      {location ? (
+        <Forecast location={location} setLocations={setLocations} locations={locations} />
+      ) : (
+        <div>No locations found. Search for a location to get started.</div>
+      )}
+      {location && <ForecastTable location={location} />}
+      <Locations locations={locations} setLocation={setLocation} />
     </div>
   );
 };

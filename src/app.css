@@ -117,3 +117,7 @@ input[type='number'] {
 button:not([disabled]):hover {
   cursor: pointer;
 }
+
+.header {
+  font-size: 22px;
+}

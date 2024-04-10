@@ -2,15 +2,14 @@ import './ForecastTable.css';
 import { useGetForecast } from '../../service/getForecast';
 import { getCloudColor, getPrecipitationColor, getTemperatureColor, getWindSpeedColor } from '../../utils/borderColors';
 import dayjs from 'dayjs';
-import { CoordinatesState } from '../../types';
-import { SaveLocation } from '../SaveLocation/SaveLocation';
+import { CurrentLocation } from '../../types/Locations';
 
 interface ForecastTableProps {
-  coordinates?: CoordinatesState;
+  location: CurrentLocation;
 }
 
-export const ForecastTable = ({ coordinates }: ForecastTableProps) => {
-  const { data: forecast, isLoading } = useGetForecast(coordinates?.curr.latitude, coordinates?.curr.longitude);
+export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps) => {
+  const { data: forecast, isLoading } = useGetForecast(coordinates.latitude, coordinates.longitude);
 
   if (isLoading) {
     // TODO
@@ -18,7 +17,7 @@ export const ForecastTable = ({ coordinates }: ForecastTableProps) => {
   }
   if (!forecast) {
     // TODO: beautify
-    return <div>'Unable to retrieve forecast. Please try again.'</div>;
+    return <div style={{ marginTop: '12px' }}>Unable to retrieve forecast. Please try again.</div>;
   }
 
   const day = dayjs();

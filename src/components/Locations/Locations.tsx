@@ -1,19 +1,15 @@
 import { Coordinates } from 'astro-ws-types';
 import './Locations.css';
+import { CurrentLocation } from '../../types/Locations';
 
 interface LocationsProps {
   locations: string;
-  setCoordinates: (c: Coordinates) => void;
+  setLocation: (l: CurrentLocation) => void;
 }
 
-interface Location {
-  name: string;
-  coordinates: Coordinates;
-}
-
-export const Locations = ({ locations: l, setCoordinates }: LocationsProps) => {
+export const Locations = ({ locations: l, setLocation }: LocationsProps) => {
   const parsedLocations = JSON.parse(l);
-  const locations: Location[] = Object.keys(JSON.parse(l)).map((key) => parsedLocations[key]);
+  const locations: CurrentLocation[] = Object.keys(JSON.parse(l)).map((key) => parsedLocations[key]);
 
   return (
     <div className="locations">
@@ -24,7 +20,7 @@ export const Locations = ({ locations: l, setCoordinates }: LocationsProps) => {
           <div>
             {location.coordinates.latitude}, {location.coordinates.longitude}
           </div>
-          <button type="button" onClick={() => setCoordinates(location.coordinates)}>
+          <button type="button" onClick={() => setLocation(location)}>
             View
           </button>
         </div>

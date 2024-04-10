@@ -1,13 +1,17 @@
-import { FC, useEffect, useState } from 'react';
+import { useState } from 'react';
 import './Navbar.css';
-import { Coordinates } from 'astro-ws-types';
+import { CurrentLocation } from '../../types/Locations';
 
-export const Navbar: FC<{ setCoordinates: (c: Coordinates) => void }> = ({ setCoordinates }) => {
+interface NavbarProps {
+  setLocation: (l: CurrentLocation) => void;
+}
+
+export const Navbar = ({ setLocation }: NavbarProps) => {
   const [lat, setLat] = useState<number | string>('');
   const [long, setLong] = useState<number | string>('');
 
   const handleSearchSubmit = () => {
-    setCoordinates({ latitude: Number(lat), longitude: Number(long) });
+    setLocation({ coordinates: { latitude: Number(lat), longitude: Number(long) } });
   };
 
   const handleSearchKeypress = ({ key }: React.KeyboardEvent<HTMLInputElement>) => {
