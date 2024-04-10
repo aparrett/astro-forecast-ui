@@ -2,10 +2,10 @@ import './ForecastTable.css';
 import { useGetForecast } from '../../service/getForecast';
 import { getCloudColor, getPrecipitationColor, getTemperatureColor, getWindSpeedColor } from '../../utils/borderColors';
 import dayjs from 'dayjs';
-import { CurrentLocation } from '../../types/Locations';
+import { AstroLocation } from '../../types/Locations';
 
 interface ForecastTableProps {
-  location: CurrentLocation;
+  location: AstroLocation;
 }
 
 export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps) => {

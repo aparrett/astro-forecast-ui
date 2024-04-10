@@ -1,6 +1,6 @@
-import { Coordinates } from "astro-ws-types";
+import { Coordinates } from 'astro-ws-types';
 
-export interface CurrentLocation {
+export interface AstroLocation {
   name?: string;
   coordinates: Coordinates;
 }

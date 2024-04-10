@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import './Navbar.css';
-import { CurrentLocation } from '../../types/Locations';
+import { AstroLocation } from '../../types/Locations';
 
 interface NavbarProps {
-  setLocation: (l: CurrentLocation) => void;
+  setLocation: (l: AstroLocation) => void;
 }
 
 export const Navbar = ({ setLocation }: NavbarProps) => {
@@ -12,6 +12,8 @@ export const Navbar = ({ setLocation }: NavbarProps) => {
 
   const handleSearchSubmit = () => {
     setLocation({ coordinates: { latitude: Number(lat), longitude: Number(long) } });
+    setLat('');
+    setLong('');
   };
 
   const handleSearchKeypress = ({ key }: React.KeyboardEvent<HTMLInputElement>) => {

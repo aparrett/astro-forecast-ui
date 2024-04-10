@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Drawer } from '../Drawer/Drawer';
-import { CurrentLocation } from '../../types/Locations';
+import { AstroLocation } from '../../types/Locations';
 import './SaveLocation.css';
+import { getLocationKey } from '../../utils/getLocationKey';
 
 interface SaveLocationProps {
-  location: CurrentLocation;
+  location: AstroLocation;
   setLocations: React.Dispatch<React.SetStateAction<string>>;
   /** stringified JSON */
   locations: string;
@@ -18,7 +19,10 @@ export const SaveLocation = ({ location: { coordinates }, setLocations, location
     setShowLocationDrawer(false);
   };
   const handleSaveLocation = () => {
-    const key = coordinates.latitude + ',' + coordinates.longitude;
+    if (!name) {
+      return alert('Name required.');
+    }
+    const key = getLocationKey({ coordinates });
     const updatedLocations = JSON.parse(locations);
     if (updatedLocations[key]) {
       // TODO: toast
@@ -34,6 +38,12 @@ export const SaveLocation = ({ location: { coordinates }, setLocations, location
   };
   const handleNameChange = ({ currentTarget: { value } }: React.FormEvent<HTMLInputElement>) => {
     setName(value);
+  };
+
+  const handleSearchKeypress = ({ key }: React.KeyboardEvent<HTMLInputElement>) => {
+    if (key === 'Enter' && name) {
+      handleSaveLocation();
+    }
   };
 
   return (
@@ -53,7 +63,7 @@ export const SaveLocation = ({ location: { coordinates }, setLocations, location
               </div>
               <div className="field">
                 <label>Name</label>
-                <input type="string" onChange={handleNameChange} value={name} />
+                <input type="string" onChange={handleNameChange} onKeyUp={handleSearchKeypress} value={name} />
               </div>
             </div>
             <div className="drawer-actions">
