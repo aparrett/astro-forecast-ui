@@ -1,24 +1,23 @@
 import './Locations.css';
-import { AstroLocation } from '../../types/Locations';
+import { AstroLocation, LocationMap } from '../../types/Locations';
 import { getLocationKey } from '../../utils/getLocationKey';
 import omit from 'lodash.omit';
 
 interface LocationsProps {
-  locations: string;
+  locations: LocationMap;
   setLocation: (l: AstroLocation) => void;
   setLocations: (locations: string) => void;
 }
 
-export const Locations = ({ locations: l, setLocation, setLocations }: LocationsProps) => {
-  const parsedLocations = JSON.parse(l);
-  const locations: AstroLocation[] = Object.keys(JSON.parse(l)).map((key) => parsedLocations[key]);
+export const Locations = ({ locations, setLocation, setLocations }: LocationsProps) => {
+  const locationsArr: AstroLocation[] = Object.keys(locations).map((key) => locations[key]);
   const handleDeleteLocation = (key: string) => {
-    setLocations(JSON.stringify(omit(parsedLocations, key)));
+    setLocations(JSON.stringify(omit(locations, key)));
   };
   return (
     <div className="locations">
       <div className="header">Locations</div>
-      {locations.map((location, i) => {
+      {locationsArr.map((location, i) => {
         const key = getLocationKey(location);
         return (
           <div key={key} className="location">

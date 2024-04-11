@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Drawer } from '../Drawer/Drawer';
-import { AstroLocation } from '../../types/Locations';
+import { AstroLocation, LocationMap } from '../../types/Locations';
 import './SaveLocation.css';
 import { getLocationKey } from '../../utils/getLocationKey';
 
 interface SaveLocationProps {
   location: AstroLocation;
   setLocations: React.Dispatch<React.SetStateAction<string>>;
-  /** stringified JSON */
-  locations: string;
+  locations: LocationMap;
   setLocation: (l: AstroLocation) => void;
 }
 
@@ -29,14 +28,13 @@ export const SaveLocation = ({
       return alert('Name required.');
     }
     const key = getLocationKey({ coordinates });
-    const updatedLocations = JSON.parse(locations);
-    if (updatedLocations[key]) {
+    if (locations[key]) {
       // TODO: toast
-      alert(`Location already exists at these coordinates with the name ${updatedLocations[key].name}.`);
+      alert(`Location already exists at these coordinates with the name ${locations[key].name}.`);
       resetAndClose();
       return;
     } else {
-      setLocations(JSON.stringify({ ...updatedLocations, [key]: { name, coordinates } }));
+      setLocations(JSON.stringify({ ...locations, [key]: { name, coordinates } }));
       setLocation({ name, coordinates });
       // TODO: toast
       alert(`Saved location ${name} at ${key}.`);
