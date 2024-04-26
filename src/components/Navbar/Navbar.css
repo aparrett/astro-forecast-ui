@@ -17,7 +17,7 @@
     flex-wrap: wrap;
   }
 
-  .navbar > .nav-search {
+  .navbar > div.nav-search {
     width: 100%;
     margin-top: 12px;
   }
@@ -35,11 +35,31 @@
   padding-right: 12px;
 }
 
-.nav-search input {
+.nav-search .drawer {
+  text-align: left;
+}
+
+.nav-coord-search {
+  margin-bottom: 6px;
+}
+
+.nav-coord-search input {
   width: 45px;
   margin-right: 6px;
 }
 
-.nav-search input::placeholder {
-  color: #b1b1b1;
+.nav-loc-search input {
+  margin-right: 6px;
+}
+
+.nav-loc-search .search-location {
+  margin-bottom: 12px;
+}
+
+.nav-loc-search .search-location .search-location-name {
+  margin-bottom: 6px;
+}
+
+.nav-loc-search .search-location button {
+  margin-top: 6px;
 }

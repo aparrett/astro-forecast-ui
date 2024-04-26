@@ -8,6 +8,10 @@ body {
   color: #ebebeb;
 }
 
+input::placeholder {
+  color: #b1b1b1;
+}
+
 .app-container {
   display: -webkit-flex;
   display: flex;
