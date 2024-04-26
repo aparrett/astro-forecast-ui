@@ -13,7 +13,20 @@ export interface TransformedForecast {
   windSpeed: number[];
   windGust: number[];
   probabilityOfPrecipitation: number[];
+  // if new datasets are added, must update dataSets below
 }
+
+export const dataSets: (keyof TransformedForecast)[] = [
+  'temperature',
+  'dewpoint',
+  'relativeHumidity',
+  'windChill',
+  'skyCover',
+  'windDirection',
+  'windSpeed',
+  'windGust',
+  'probabilityOfPrecipitation',
+];
 
 /** Duplicates values depending on the duration given by the NWS. Also removes the durations after expanding. */
 export const expand = (values: ForecastValue[]) => {
@@ -45,18 +58,41 @@ export const removePast = (values: ForecastValue[]) => {
 };
 
 /** Expands time windows given by the NWS API and trims past data */
-export const transformForecast = (forecast: GetForecastResponse): TransformedForecast => ({
-  updateTime: forecast.updateTime,
-  elevation: forecast.elevation,
-  temperature: removePast(expand(forecast.temperature)),
-  dewpoint: removePast(expand(forecast.dewpoint)),
-  relativeHumidity: removePast(expand(forecast.relativeHumidity)),
-  windChill: removePast(expand(forecast.windChill)),
-  skyCover: removePast(expand(forecast.skyCover)),
-  windDirection: removePast(expand(forecast.windDirection)),
-  windSpeed: removePast(expand(forecast.windSpeed)),
-  windGust: removePast(expand(forecast.windGust)),
-  probabilityOfPrecipitation: removePast(expand(forecast.probabilityOfPrecipitation)).filter(
-    (_, i, a) => i < a.length - 5
-  ),
-});
+export const transformForecast = (forecast: GetForecastResponse): TransformedForecast => {
+  const expanded = {
+    temperature: removePast(expand(forecast.temperature)),
+    dewpoint: removePast(expand(forecast.dewpoint)),
+    relativeHumidity: removePast(expand(forecast.relativeHumidity)),
+    windChill: removePast(expand(forecast.windChill)),
+    skyCover: removePast(expand(forecast.skyCover)),
+    windDirection: removePast(expand(forecast.windDirection)),
+    windSpeed: removePast(expand(forecast.windSpeed)),
+    windGust: removePast(expand(forecast.windGust)),
+    probabilityOfPrecipitation: removePast(expand(forecast.probabilityOfPrecipitation)).filter(
+      (_, i, a) => i < a.length - 5
+    ),
+  } as TransformedForecast;
+  const minHours = getMinHours(expanded);
+
+  // Slicing the datasets is necessary because the NWS randomly gives a few more hours worth of data for certain datasets.
+  return {
+    updateTime: forecast.updateTime,
+    elevation: forecast.elevation,
+    temperature: expanded.temperature.slice(0, minHours),
+    dewpoint: expanded.dewpoint.slice(0, minHours),
+    relativeHumidity: expanded.relativeHumidity.slice(0, minHours),
+    windChill: expanded.windChill.slice(0, minHours),
+    skyCover: expanded.skyCover.slice(0, minHours),
+    windDirection: expanded.windDirection.slice(0, minHours),
+    windSpeed: expanded.windSpeed.slice(0, minHours),
+    windGust: expanded.windGust.slice(0, minHours),
+    probabilityOfPrecipitation: expanded.probabilityOfPrecipitation.slice(0, minHours),
+  };
+};
+
+/**
+ * Gets the minimum number of hours that we have data for for any given dataset.
+ */
+export const getMinHours = (forecast: TransformedForecast) => {
+  return Math.min(...dataSets.map((d) => (forecast[d] as number[]).length));
+};
