@@ -111,7 +111,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Sky cover */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.skyCover.map((v, i) => (
               <div className={`cell border ${getCloudColor(v)}-border`} key={i}>
                 {v}
@@ -120,7 +120,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Wind speed */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.windSpeed.map((v, i) => (
               <div className={`cell border ${getWindSpeedColor(v)}-border`} key={i}>
                 {v}
@@ -129,7 +129,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Wind gust */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.windGust.map((v, i) => (
               <div className={`cell border ${getWindSpeedColor(v)}-border`} key={i}>
                 {v}
@@ -138,7 +138,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Wind direction */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.windDirection.map((v, i) => (
               <div className={`cell border wind-direction`}>
                 <div style={{ rotate: `${v + 180}deg` }}>&#8593;</div>
@@ -147,7 +147,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Temperature */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.temperature.map((v, i) => (
               <div className={`cell border ${getTemperatureColor(v)}-border`} key={i}>
                 {v}
@@ -156,7 +156,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Dewpoint */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.dewpoint.map((v, i) => (
               <div className={`cell border ${getTemperatureColor(v)}-border`} key={i}>
                 {v}
@@ -165,7 +165,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           </div>
 
           {/* Precipiation */}
-          <div className="row">
+          <div className="row data-point">
             {forecast?.probabilityOfPrecipitation.map((v, i) => (
               <div className={`cell border ${getPrecipitationColor(v)}-border`} key={i}>
                 {v}
