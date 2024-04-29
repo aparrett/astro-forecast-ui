@@ -36,6 +36,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           <div className="y-header">C</div>
           <div className="y-header">W</div>
           <div className="y-header">G</div>
+          <div className="y-header">&#8593;</div>
           <div className="y-header">T</div>
           <div className="y-header">D</div>
           <div className="y-header">P</div>
@@ -118,6 +119,15 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
             {forecast?.windGust.map((v, i) => (
               <div className={`cell border ${getWindSpeedColor(v)}-border`} key={i}>
                 {v}
+              </div>
+            ))}
+          </div>
+
+          {/* Wind direction */}
+          <div className="row">
+            {forecast?.windDirection.map((v, i) => (
+              <div className={`cell border`}>
+                <div style={{ rotate: `${v + 180}deg` }}>&#8593;</div>
               </div>
             ))}
           </div>
