@@ -33,13 +33,27 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
       <div className="forecast-table">
         <div className="y-headers">
           <div className="y-header" style={{ height: '46px' }}></div>
-          <div className="y-header">C</div>
-          <div className="y-header">W</div>
-          <div className="y-header">G</div>
-          <div className="y-header">&#8593;</div>
-          <div className="y-header">T</div>
-          <div className="y-header">D</div>
-          <div className="y-header">P</div>
+          <div className="y-header">
+            <img src="/images/cloud.png" className="icon" alt="Created by kosonicon - Flaticon" />
+          </div>
+          <div className="y-header">
+            <img src="/images/wind.png" className="icon" alt="Vitaly Gorbachev - Flaticon" />
+          </div>
+          <div className="y-header">
+            <img src="/images/windStrong.png" className="icon" alt="Freepik - Flaticon" />
+          </div>
+          <div className="y-header">
+            <img src="/images/windDirection.png" className="icon" alt="Only Srikanth - Flaticon" />
+          </div>
+          <div className="y-header">
+            <img src="/images/thermometer.png" className="icon" alt="Freepik - Flaticon" />
+          </div>
+          <div className="y-header">
+            <img src="/images/dew.png" className="icon" alt="Dew - me" />
+          </div>
+          <div className="y-header">
+            <img src="/images/raindrop.png" className="icon" alt="Good Ware - Flaticon" />
+          </div>
         </div>
         <div className="forecast-data">
           {/* Days of the week row */}
@@ -126,7 +140,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           {/* Wind direction */}
           <div className="row">
             {forecast?.windDirection.map((v, i) => (
-              <div className={`cell border`}>
+              <div className={`cell border wind-direction`}>
                 <div style={{ rotate: `${v + 180}deg` }}>&#8593;</div>
               </div>
             ))}

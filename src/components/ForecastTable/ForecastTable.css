@@ -1,8 +1,14 @@
 .forecast-table {
   font-size: 14px;
   margin-top: 20px;
-  min-height: 50px; /* delete this later */
   display: flex;
+}
+
+@media (max-width: 1200px) {
+  /* disregard gutter for the table on mobile */
+  .forecast-table {
+    margin-left: -12px;
+  }
 }
 
 .row {
@@ -29,19 +35,21 @@
   margin-top: 4px;
 }
 
+/* adds better spacing for the arrows */
+.forecast-table .cell.border.wind-direction {
+  margin-top: 2px;
+  padding-bottom: 5px;
+}
+
 .forecast-table .y-headers {
-  width: 22px; /* todo: this will change with icons */
+  width: 30px;
   flex-shrink: 0;
   text-align: center;
 }
 
 .forecast-table .y-header {
-  height: 27px;
-  border-bottom-width: 5px;
-  border-bottom-style: solid;
-  border-bottom-color: #00000000;
-  padding-top: 3px;
-  margin-bottom: 4px;
+  height: 31px;
+  padding-top: 5px;
 }
 
 .forecast-table .tod {
@@ -61,4 +69,8 @@
 
 .forecast-data .dow:last-child {
   border-right: none;
+}
+
+.forecast-table .icon {
+  height: 16px;
 }
