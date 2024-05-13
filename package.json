@@ -1,5 +1,5 @@
 {
-  "name": "astro-forecast-ui",
+  "name": "astro-ws-api",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -35,7 +35,7 @@
     "@types/react-router-dom": "^5.1.8",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.3.0",
-    "astro-ws-types": "^0.0.5",
+    "astro-ws-types": "^0.0.7",
     "prettier": "^2.3.2",
     "typescript": "^4.1.2",
     "vite": "^5.1.3",
