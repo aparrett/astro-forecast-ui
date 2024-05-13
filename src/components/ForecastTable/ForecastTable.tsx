@@ -61,17 +61,20 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
             {/* first day */}
             <div className="dow" style={{ width: initialDayWidth + 'px' }}>
               {/* only show abbreviation if there is enough room */}
-              {hoursLeftInDay > 1 && day.format('ddd')}
+              {hoursLeftInDay > 1 && day.format('ddd')} 
+              {hoursLeftInDay > 3 && ` - ${day.format('D')}`}
             </div>
             {new Array(remainingDays - 1).fill('x').map((_, i) => (
               <div key={i} className="dow">
                 {day.add(i + 1, 'day').format('ddd')}
+                {hoursLeftInDay > 3 && ` - ${day.add(i + 1, 'day').format('D')}`}
               </div>
             ))}
             {/* last day */}
             <div className="dow" style={{ width: lastDayWidth + 'px' }}>
               {/* only show abbreviation if there is enough room */}
               {lastDayWidth > 1 && day.add(remainingDays, 'day').format('ddd')}
+              {lastDayWidth > 3 && ` - ${day.add(remainingDays, 'day').format('D')}`}
             </div>
           </div>
 
