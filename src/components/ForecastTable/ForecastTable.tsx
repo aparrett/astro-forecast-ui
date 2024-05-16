@@ -6,6 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import { AstroLocation } from '../../types/Locations';
 import { useGetSolarDetails } from '../../service/getSolarDetails';
 import { CELL_WIDTH } from '../../utils/constants';
+import { Fragment } from 'react/jsx-runtime';
 
 dayjs.extend(utc);
 
@@ -68,7 +69,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           {/* Days of the week row */}
           <div className="row">
             {/* first day */}
-            <div className="dow" style={{ width: initialDayWidth + 'px' }}>
+            <div className="dow" style={{ width: initialDayWidth + 'px' }} key="first-day">
               {/* only show abbreviation if there is enough room */}
               {hoursLeftInDay > 1 && now.format('ddd')}
               {hoursLeftInDay > 3 && ` - ${now.format('D')}`}
@@ -80,7 +81,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
               </div>
             ))}
             {/* last day */}
-            <div className="dow" style={{ width: lastDayWidth + 'px' }}>
+            <div className="dow" style={{ width: lastDayWidth + 'px' }} key="last-day">
               {/* only show abbreviation if there is enough room */}
               {lastDayWidth > 1 && now.add(remainingDays, 'day').format('ddd')}
               {lastDayWidth > 3 && ` - ${now.add(remainingDays, 'day').format('D')}`}
@@ -211,7 +212,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
                 const missingPixelColor = containsSunrise ? 'light-blue' : containsNautTwilight ? 'blue' : 'dark-blue';
 
                 return (
-                  <>
+                  <Fragment key={i}>
                     <div
                       className={`cell border black-border`}
                       style={{ width: `${totalDarkWidth}px` }}
@@ -235,7 +236,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
                         key={i + 'missingPixel'}
                       />
                     )}
-                  </>
+                  </Fragment>
                 );
               }
 
@@ -295,7 +296,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
               const missingPixelColor = containsTotalDarkness ? 'black' : containsAstroTwilight ? 'dark-blue' : 'blue';
 
               return (
-                <>
+                <Fragment key={i}>
                   <div
                     className={`cell border light-blue-border`}
                     style={{ width: `${sunsetWidth}px` }}
@@ -319,7 +320,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
                       key={i + 'missingPixel'}
                     />
                   )}
-                </>
+                </Fragment>
               );
             })}
           </div>
