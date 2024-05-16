@@ -24,8 +24,8 @@ export const useGetSolarDetails = (
   const getAllSolarDetails = async () => {
     const requests = [];
     const today = dayjs();
-    // Retrieve solar data for 8 days, including today.
-    for (let i = 0; i < 8; i++) {
+    // Retrieve solar data for 9 days, including today.
+    for (let i = 0; i < 9; i++) {
       const date = today.add(i, 'days').format('YYYY-MM-DD');
       requests.push(getSolarDetails(lat, long, date));
     }

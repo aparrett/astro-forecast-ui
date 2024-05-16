@@ -130,6 +130,11 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
               const columnHourEnd = columnHour.endOf('hour');
               const daysAfterToday = columnHour.startOf('day').diff(now.startOf('day'), 'days');
               const daySolarDetails = solarDetails[daysAfterToday];
+              if (!daySolarDetails) {
+                // This should only ever display if we start getting more forecast data than 8 days out (9 days total)
+                console.error('Error retrieving all details');
+                return <></>;
+              }
 
               const astronomicalTwilightBegin = dayjs.utc(daySolarDetails.astronomicalTwilightBegin).local();
               const astronomicalTwilightEnd = dayjs.utc(daySolarDetails.astronomicalTwilightEnd).local();
@@ -194,34 +199,42 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
                     nautMinutes = 60;
                   }
                 }
-                const totalDarkPerc = totalDarknessMinutes / 60;
-                const astroPerc = astroMinutes / 60;
-                const nautPerc = nautMinutes / 60;
                 const sunriseMinutes = containsSunrise ? Math.abs(columnHourEnd.diff(sunrise, 'minutes')) : 0;
-                const sunrisePerc = sunriseMinutes / 60;
+
+                const totalDarkWidth = Math.round((CELL_WIDTH * totalDarknessMinutes) / 60);
+                const astroWidth = Math.round((CELL_WIDTH * astroMinutes) / 60);
+                const nautWidth = Math.round((CELL_WIDTH * nautMinutes) / 60);
+                const sunriseWidth = Math.round((CELL_WIDTH * sunriseMinutes) / 60);
+                // since we are using percentages of pixels, we round and add a pixel to ensure there are no missing pixels, the data looks correct, and
+                // the length of the row is equal to the others
+                const missingPixelWidth = CELL_WIDTH - totalDarkWidth - astroWidth - nautWidth - sunriseWidth;
+                const missingPixelColor = containsSunrise ? 'light-blue' : containsNautTwilight ? 'blue' : 'dark-blue';
 
                 return (
                   <>
                     <div
                       className={`cell border black-border`}
-                      style={{ width: `${CELL_WIDTH * totalDarkPerc}px` }}
+                      style={{ width: `${totalDarkWidth}px` }}
                       key={i + 'total'}
                     />
                     <div
                       className={`cell border dark-blue-border`}
-                      style={{ width: `${CELL_WIDTH * astroPerc}px` }}
+                      style={{ width: `${astroWidth}px` }}
                       key={i + 'astro'}
                     />
-                    <div
-                      className={`cell border blue-border`}
-                      style={{ width: `${CELL_WIDTH * nautPerc}px` }}
-                      key={i + 'naut'}
-                    />
+                    <div className={`cell border blue-border`} style={{ width: `${nautWidth}px` }} key={i + 'naut'} />
                     <div
                       className={`cell border light-blue-border`}
-                      style={{ width: `${CELL_WIDTH * sunrisePerc}px` }}
+                      style={{ width: `${sunriseWidth}px` }}
                       key={i + 'sunrise'}
                     />
+                    {missingPixelWidth > 0 && (
+                      <div
+                        className={`cell border ${missingPixelColor}-border`}
+                        style={{ width: `${missingPixelWidth}px` }}
+                        key={i + 'missingPixel'}
+                      />
+                    )}
                   </>
                 );
               }
@@ -271,33 +284,41 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
               const totalDarknessMinutes = containsTotalDarkness
                 ? Math.abs(columnHourEnd.diff(astronomicalTwilightEnd, 'minutes'))
                 : 0;
-              const sunsetPerc = sunsetMinutes / 60;
-              const nautPerc = nautMinutes / 60;
-              const astroPerc = astroMinutes / 60;
-              const totalDarkPerc = totalDarknessMinutes / 60;
+              const sunsetWidth = Math.round((CELL_WIDTH * sunsetMinutes) / 60);
+              const nautWidth = Math.round((CELL_WIDTH * nautMinutes) / 60);
+              const astroWidth = Math.round((CELL_WIDTH * astroMinutes) / 60);
+              const totalDarkWidth = Math.round((CELL_WIDTH * totalDarknessMinutes) / 60);
+
+              // since we are using percentages of pixels, we round and add a pixel to ensure there are no missing pixels, the data looks correct, and
+              // the length of the row is equal to the others
+              const missingPixelWidth = CELL_WIDTH - totalDarkWidth - astroWidth - nautWidth - sunsetWidth;
+              const missingPixelColor = containsTotalDarkness ? 'black' : containsAstroTwilight ? 'dark-blue' : 'blue';
 
               return (
                 <>
                   <div
                     className={`cell border light-blue-border`}
-                    style={{ width: `${CELL_WIDTH * sunsetPerc}px` }}
+                    style={{ width: `${sunsetWidth}px` }}
                     key={i + 'sunset'}
                   />
-                  <div
-                    className={`cell border blue-border`}
-                    style={{ width: `${CELL_WIDTH * nautPerc}px` }}
-                    key={i + 'naut'}
-                  />
+                  <div className={`cell border blue-border`} style={{ width: `${nautWidth}px` }} key={i + 'naut'} />
                   <div
                     className={`cell border dark-blue-border`}
-                    style={{ width: `${CELL_WIDTH * astroPerc}px` }}
+                    style={{ width: `${astroWidth}px` }}
                     key={i + 'astro'}
                   />
                   <div
                     className={`cell border black-border`}
-                    style={{ width: `${CELL_WIDTH * totalDarkPerc}px` }}
+                    style={{ width: `${totalDarkWidth}px` }}
                     key={i + 'total'}
                   />
+                  {missingPixelWidth > 0 && (
+                    <div
+                      className={`cell border ${missingPixelColor}-border`}
+                      style={{ width: `${missingPixelWidth}px` }}
+                      key={i + 'missingPixel'}
+                    />
+                  )}
                 </>
               );
             })}
