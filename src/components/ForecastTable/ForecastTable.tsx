@@ -1,31 +1,39 @@
 import './ForecastTable.css';
 import { useGetForecast } from '../../service/getForecast';
 import { getCloudColor, getPrecipitationColor, getTemperatureColor, getWindSpeedColor } from '../../utils/borderColors';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { AstroLocation } from '../../types/Locations';
+import { useGetSolarDetails } from '../../service/getSolarDetails';
+import { CELL_WIDTH } from '../../utils/constants';
+
+dayjs.extend(utc);
 
 interface ForecastTableProps {
   location: AstroLocation;
 }
 
 export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps) => {
-  const { data: forecast, isLoading } = useGetForecast(coordinates.latitude, coordinates.longitude);
+  const { data: forecast, isLoading: isForecastLoading } = useGetForecast(coordinates.latitude, coordinates.longitude);
+  const { data: solarDetails, isLoading: isSolarDetailsLoading } = useGetSolarDetails(
+    coordinates.latitude,
+    coordinates.longitude
+  );
 
-  if (isLoading) {
+  if (isForecastLoading || isSolarDetailsLoading) {
     // TODO
     return <></>;
   }
-  if (!forecast) {
+  if (!forecast || !solarDetails) {
     // TODO: beautify
     return <div style={{ marginTop: '12px' }}>Unable to retrieve forecast. Please try again.</div>;
   }
 
-  const day = dayjs();
-  const cellWidth = 26;
-  const hoursLeftInDay = 24 - day.hour();
-  const initialDayWidth = cellWidth * hoursLeftInDay;
+  const now = dayjs();
+  const hoursLeftInDay = 24 - now.hour();
+  const initialDayWidth = CELL_WIDTH * hoursLeftInDay;
   const totalHours = forecast.skyCover.length;
-  const lastDayWidth = cellWidth * ((totalHours - hoursLeftInDay) % 24);
+  const lastDayWidth = CELL_WIDTH * ((totalHours - hoursLeftInDay) % 24);
   const remainingDays = Math.ceil((totalHours - hoursLeftInDay) / 24);
 
   return (
@@ -33,6 +41,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
       <div className="forecast-table">
         <div className="y-headers">
           <div className="y-header" style={{ height: '46px' }}></div>
+          <div className="y-header">S</div>
           <div className="y-header">
             <img src="/images/cloud.png" className="icon" alt="Created by kosonicon - Flaticon" />
           </div>
@@ -61,20 +70,20 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
             {/* first day */}
             <div className="dow" style={{ width: initialDayWidth + 'px' }}>
               {/* only show abbreviation if there is enough room */}
-              {hoursLeftInDay > 1 && day.format('ddd')} 
-              {hoursLeftInDay > 3 && ` - ${day.format('D')}`}
+              {hoursLeftInDay > 1 && now.format('ddd')}
+              {hoursLeftInDay > 3 && ` - ${now.format('D')}`}
             </div>
             {new Array(remainingDays - 1).fill('x').map((_, i) => (
               <div key={i} className="dow">
-                {day.add(i + 1, 'day').format('ddd')}
-                {hoursLeftInDay > 3 && ` - ${day.add(i + 1, 'day').format('D')}`}
+                {now.add(i + 1, 'day').format('ddd')}
+                {hoursLeftInDay > 3 && ` - ${now.add(i + 1, 'day').format('D')}`}
               </div>
             ))}
             {/* last day */}
             <div className="dow" style={{ width: lastDayWidth + 'px' }}>
               {/* only show abbreviation if there is enough room */}
-              {lastDayWidth > 1 && day.add(remainingDays, 'day').format('ddd')}
-              {lastDayWidth > 3 && ` - ${day.add(remainingDays, 'day').format('D')}`}
+              {lastDayWidth > 1 && now.add(remainingDays, 'day').format('ddd')}
+              {lastDayWidth > 3 && ` - ${now.add(remainingDays, 'day').format('D')}`}
             </div>
           </div>
 
@@ -113,6 +122,187 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
             })}
           </div>
 
+          {/* Sunrise Sunset row */}
+          <div className="row">
+            {new Array(totalHours).fill('x').map((_, i) => {
+              const columnHour = now.add(i, 'hours');
+              const columnHourStart = columnHour.startOf('hour');
+              const columnHourEnd = columnHour.endOf('hour');
+              const daysAfterToday = columnHour.startOf('day').diff(now.startOf('day'), 'days');
+              const daySolarDetails = solarDetails[daysAfterToday];
+
+              const astronomicalTwilightBegin = dayjs.utc(daySolarDetails.astronomicalTwilightBegin).local();
+              const astronomicalTwilightEnd = dayjs.utc(daySolarDetails.astronomicalTwilightEnd).local();
+              const nauticalTwilightBegin = dayjs.utc(daySolarDetails.nauticalTwilightBegin).local();
+              const nauticalTwilightEnd = dayjs.utc(daySolarDetails.nauticalTwilightEnd).local();
+              const sunrise = dayjs.utc(daySolarDetails.sunrise).local();
+              const sunset = dayjs.utc(daySolarDetails.sunset).local();
+
+              const isDuringTotalDarkness =
+                columnHourEnd.isBefore(astronomicalTwilightBegin) || columnHourStart.isAfter(astronomicalTwilightEnd);
+              const isDuringSunup = columnHourStart.isAfter(sunrise) && columnHourEnd.isBefore(sunset);
+
+              const color = isDuringTotalDarkness ? 'black' : 'light-blue';
+              if (isDuringTotalDarkness || isDuringSunup) {
+                return <div className={`cell border ${color}-border`} key={i} />;
+              }
+
+              const hourContains = (time: Dayjs) => time.isAfter(columnHourStart) && time.isBefore(columnHourEnd);
+
+              const isMorning = columnHourStart.isBefore(sunrise);
+              if (isMorning) {
+                const containsTotalDarkness = hourContains(astronomicalTwilightBegin);
+                const containsAstroTwilight =
+                  hourContains(astronomicalTwilightBegin) ||
+                  (columnHourStart.isAfter(astronomicalTwilightBegin) &&
+                    columnHourStart.isBefore(nauticalTwilightBegin));
+                const containsNautTwilight =
+                  hourContains(nauticalTwilightBegin) ||
+                  (columnHourStart.isAfter(nauticalTwilightBegin) && columnHourStart.isBefore(sunrise));
+                const containsSunrise = hourContains(sunrise);
+
+                const totalDarknessMinutes = containsTotalDarkness
+                  ? Math.abs(columnHourStart.diff(astronomicalTwilightBegin, 'minutes'))
+                  : 0;
+                let astroMinutes = 0;
+                if (containsAstroTwilight) {
+                  // if astro twilight starts within the hour
+                  if (columnHourStart.isBefore(astronomicalTwilightBegin)) {
+                    if (containsNautTwilight) {
+                      astroMinutes = Math.abs(astronomicalTwilightBegin.diff(nauticalTwilightBegin, 'minutes'));
+                    } else {
+                      astroMinutes = Math.abs(columnHourEnd.diff(astronomicalTwilightBegin, 'minutes'));
+                    }
+                  } else if (containsNautTwilight) {
+                    astroMinutes = Math.abs(columnHourStart.diff(nauticalTwilightBegin, 'minutes'));
+                  } else {
+                    astroMinutes = 60;
+                  }
+                }
+                let nautMinutes = 0;
+                if (containsNautTwilight) {
+                  // If naut twilight starts within the hour
+                  if (columnHourStart.isBefore(nauticalTwilightBegin)) {
+                    if (containsSunrise) {
+                      nautMinutes = Math.abs(sunrise.diff(nauticalTwilightBegin, 'minutes'));
+                    } else {
+                      nautMinutes = Math.abs(nauticalTwilightBegin.diff(columnHourEnd, 'minutes'));
+                    }
+                  } else if (containsSunrise) {
+                    nautMinutes = Math.abs(columnHourStart.diff(sunrise, 'minutes'));
+                  } else {
+                    nautMinutes = 60;
+                  }
+                }
+                const totalDarkPerc = totalDarknessMinutes / 60;
+                const astroPerc = astroMinutes / 60;
+                const nautPerc = nautMinutes / 60;
+                const sunriseMinutes = containsSunrise ? Math.abs(columnHourEnd.diff(sunrise, 'minutes')) : 0;
+                const sunrisePerc = sunriseMinutes / 60;
+
+                return (
+                  <>
+                    <div
+                      className={`cell border black-border`}
+                      style={{ width: `${CELL_WIDTH * totalDarkPerc}px` }}
+                      key={i + 'total'}
+                    />
+                    <div
+                      className={`cell border dark-blue-border`}
+                      style={{ width: `${CELL_WIDTH * astroPerc}px` }}
+                      key={i + 'astro'}
+                    />
+                    <div
+                      className={`cell border blue-border`}
+                      style={{ width: `${CELL_WIDTH * nautPerc}px` }}
+                      key={i + 'naut'}
+                    />
+                    <div
+                      className={`cell border light-blue-border`}
+                      style={{ width: `${CELL_WIDTH * sunrisePerc}px` }}
+                      key={i + 'sunrise'}
+                    />
+                  </>
+                );
+              }
+
+              const containsSunset = hourContains(sunset);
+              const containsNautTwilight =
+                hourContains(sunset) ||
+                (columnHourStart.isAfter(sunset) && columnHourStart.isBefore(nauticalTwilightEnd));
+              const containsAstroTwilight =
+                hourContains(nauticalTwilightEnd) ||
+                (columnHourStart.isAfter(nauticalTwilightEnd) && columnHourStart.isBefore(astronomicalTwilightEnd));
+              const containsTotalDarkness = hourContains(astronomicalTwilightEnd);
+
+              const sunsetMinutes = containsSunset ? Math.abs(columnHourStart.diff(sunset, 'minutes')) : 0;
+              let nautMinutes = 0;
+              // time between sunset and nautTwilightEnd
+              if (containsNautTwilight) {
+                // if nautTwilight ends within the hour
+                if (nauticalTwilightEnd.isBefore(columnHourEnd)) {
+                  if (containsSunset) {
+                    nautMinutes = Math.abs(sunset.diff(nauticalTwilightEnd, 'minutes'));
+                  } else {
+                    nautMinutes = Math.abs(nauticalTwilightEnd.diff(columnHourStart, 'minutes'));
+                  }
+                } else if (containsSunset) {
+                  nautMinutes = Math.abs(columnHourEnd.diff(sunset, 'minutes'));
+                } else {
+                  nautMinutes = 60;
+                }
+              }
+              let astroMinutes = 0;
+              // Time between nautTwilightEnd and astroTwilightEnd
+              if (containsAstroTwilight) {
+                // if astro twilight ends within the hour
+                if (astronomicalTwilightEnd.isBefore(columnHourEnd)) {
+                  if (containsNautTwilight) {
+                    astroMinutes = Math.abs(astronomicalTwilightEnd.diff(nauticalTwilightEnd, 'minutes'));
+                  } else {
+                    astroMinutes = Math.abs(columnHourStart.diff(astronomicalTwilightEnd, 'minutes'));
+                  }
+                } else if (containsNautTwilight) {
+                  astroMinutes = Math.abs(columnHourEnd.diff(nauticalTwilightEnd, 'minutes'));
+                } else {
+                  astroMinutes = 60;
+                }
+              }
+              const totalDarknessMinutes = containsTotalDarkness
+                ? Math.abs(columnHourEnd.diff(astronomicalTwilightEnd, 'minutes'))
+                : 0;
+              const sunsetPerc = sunsetMinutes / 60;
+              const nautPerc = nautMinutes / 60;
+              const astroPerc = astroMinutes / 60;
+              const totalDarkPerc = totalDarknessMinutes / 60;
+
+              return (
+                <>
+                  <div
+                    className={`cell border light-blue-border`}
+                    style={{ width: `${CELL_WIDTH * sunsetPerc}px` }}
+                    key={i + 'sunset'}
+                  />
+                  <div
+                    className={`cell border blue-border`}
+                    style={{ width: `${CELL_WIDTH * nautPerc}px` }}
+                    key={i + 'naut'}
+                  />
+                  <div
+                    className={`cell border dark-blue-border`}
+                    style={{ width: `${CELL_WIDTH * astroPerc}px` }}
+                    key={i + 'astro'}
+                  />
+                  <div
+                    className={`cell border black-border`}
+                    style={{ width: `${CELL_WIDTH * totalDarkPerc}px` }}
+                    key={i + 'total'}
+                  />
+                </>
+              );
+            })}
+          </div>
+
           {/* Sky cover */}
           <div className="row data-point">
             {forecast?.skyCover.map((v, i) => (
@@ -143,7 +333,7 @@ export const ForecastTable = ({ location: { coordinates } }: ForecastTableProps)
           {/* Wind direction */}
           <div className="row data-point">
             {forecast?.windDirection.map((v, i) => (
-              <div className={`cell border wind-direction`}>
+              <div className={`cell border wind-direction`} key={i}>
                 <div style={{ rotate: `${v + 180}deg` }}>&#8593;</div>
               </div>
             ))}

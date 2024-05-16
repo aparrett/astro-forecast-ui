@@ -64,12 +64,16 @@ input::placeholder {
   border-color: #ededed;
 }
 
+.dark-blue-border {
+  border-color: #1c1cc5;
+}
+
 .blue-border {
   border-color: #005abb;
 }
 
 .light-blue-border {
-  border-color: #5396dd;
+  border-color: #86e2fb;
 }
 
 .light-yellow-border {

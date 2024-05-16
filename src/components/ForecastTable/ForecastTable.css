@@ -27,6 +27,7 @@
 .forecast-table .cell {
   /* increased width to support 3 digits */
   width: 26px;
+  height: 27px;
   flex-shrink: 0;
   text-align: center;
   padding-bottom: 3px;
